@@ -5,5 +5,6 @@ imageio-ffmpeg
 torch
 torchvision
 ultralytics
+SAM-2
 transformers
 accelerate
