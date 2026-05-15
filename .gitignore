@@ -1,0 +1,82 @@
+# --- python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# --- editor / OS ---
+.vscode/
+.idea/
+.DS_Store
+
+# --- disabled nested git repos (renamed from .git) ---
+.git_disabled/
+**/.git_disabled/
+
+# --- stray file ---
+=4.46.2,
+
+# --- datasets (not committed) ---
+ROSE-Benchmark/
+wild_videos/
+DAVIS/
+eval_dataset/
+
+# --- run outputs / logs ---
+eval_results/
+log_out/
+log_out_concise/
+**/log_out/
+**/log_out_concise/
+**/results_eval/
+**/inputs/
+**/outputs/
+
+# --- model weights (binary, big) ---
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+*.bin
+*.onnx
+*.h5
+
+# --- video / large media ---
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.m4v
+*.gif
+*.npy
+*.npz
+*.tar
+*.tar.gz
+*.zip
+
+# --- ROSE: huge model checkpoints ---
+ROSE/models/
+ROSE/weights/
+ROSE/assets/
+ROSE/results/
+ROSE/data/
+
+# --- EffectErase: huge backbone & demo assets ---
+EffectErase/Wan-AI/
+EffectErase/EffectErase.ckpt
+EffectErase/assets/
+EffectErase/demo/
+EffectErase/.effecterase_frame_work/
+
+# --- ProPainter: weights, eval outputs, demo assets ---
+ProPainter/weights/
+ProPainter/results/
+ProPainter/results_eval/
+ProPainter/inputs/
+ProPainter/assets/
+ProPainter/web-demos/
+
+# --- but keep the qualitative figure ---
+!assets/
+!assets/cv_quali.png
