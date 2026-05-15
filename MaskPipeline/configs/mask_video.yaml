@@ -1,0 +1,29 @@
+runtime:
+  device: cpu
+  enable_optical_flow: false
+  allow_yolo_only_fallback: false
+  max_frames: null
+  save_frames: false
+  save_debug: false
+
+models:
+  sam3_model_dir: /home/czy/.cache/modelscope/hub/models/facebook/sam3
+  yolo_detector: yolov8n.pt
+  yolo_segmenter: yolov8n-seg.pt
+
+thresholds:
+  det_conf: 0.35
+  min_box_area_ratio: 0.0005
+  max_box_area_ratio: 0.8
+  fallback_min_area: 100
+  fallback_iou_threshold: 0.2
+  fallback_center_distance_ratio: 0.25
+  mask_threshold: 0.5
+  area_ratio_spike: 4.0
+
+postprocess:
+  binary_threshold: 0.5
+  dilate_kernel: 7
+  dilate_iterations: 1
+  close_kernel: 7
+  min_component_area: 64

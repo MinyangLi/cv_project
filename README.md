@@ -1,11 +1,13 @@
 # Video Object Removal Benchmark
 
 This repository compares three video object-removal methods on the
-**ROSE-Benchmark** plus arbitrary in-the-wild clips:
+**ROSE-Benchmark** plus arbitrary in-the-wild clips, and includes a standalone
+pipeline for generating object masks:
 
 - **ROSE** &mdash; diffusion-based removal (Wan2.1-Fun-1.3B-InP backbone).
 - **EffectErase** &mdash; LoRA-tuned Wan2.1 inpainting pipeline.
 - **ProPainter** &mdash; flow-guided propagation + transformer inpainter.
+- **MaskPipeline** &mdash; SAM3 + YOLOv8-seg video mask generation.
 
 ## Qualitative Comparison
 
@@ -19,7 +21,7 @@ method. Red boxes highlight residual artefacts.
 | Dataset             | Source                                            | Layout used by the scripts                                                                |
 | ------------------- | ------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | **ROSE-Benchmark**  | `Kunbyte/ROSE-Dataset` on HuggingFace             | `ROSE-Benchmark/Benchmark/<category>/{Unedited,Masked,Edited}/example-<id>.mp4` (6 categories: `common`, `light_source`, `mirror`, `reflection`, `shadow`, `transcluent`) |
-| **Wild videos**     | User-supplied clips                               | `wild_videos/<name>.mp4` + `wild_videos/<name>_mask.mp4`                                  |
+| **Wild videos**     | User-supplied clips, optionally with MaskPipeline masks | `wild_videos/<name>.mp4` + `wild_videos/<name>_mask.mp4`                                  |
 
 > The video / mask datasets and any inference outputs are **not** committed
 > to this repository. After cloning, prepare them locally as described below.
@@ -41,6 +43,7 @@ cv_project/
 ├── ROSE/                             # ROSE inference code  (conda env: rose)
 ├── EffectErase/                      # EffectErase code     (conda env: effecterase)
 ├── ProPainter/                       # ProPainter code      (conda env: propainter)
+├── MaskPipeline/                     # Video mask generation (conda env: sam3)
 │
 ├── ROSE-Benchmark/                   # Test set (downloaded, not in git)
 │   └── Benchmark/<category>/
@@ -69,17 +72,19 @@ cv_project/
 
 ## Environment Setup
 
-Each method has its own conda environment. The shell scripts handle the
-`conda activate` calls for you; only set the envs up once.
+Each method has its own conda environment. The shell scripts for the removal
+methods handle the `conda activate` calls for you; only set the envs up once.
 
 ```bash
 conda create -n rose         python=3.10 -y
 conda create -n effecterase  python=3.10 -y
 conda create -n propainter   python=3.10 -y
+conda create -n sam3         python=3.10 -y
 ```
 
 Install the dependencies of each method inside its own env (see
-`ROSE/README.md`, `EffectErase/README.md`, `ProPainter/README.md`).
+`ROSE/README.md`, `EffectErase/README.md`, `ProPainter/README.md`, and
+`MaskPipeline/README.md`).
 
 Required model weights:
 
@@ -88,6 +93,47 @@ Required model weights:
 | ROSE        | `ROSE/models/Wan2.1-Fun-1.3B-InP`, `ROSE/weights/transformer`                          |
 | EffectErase | `EffectErase/Wan-AI/Wan2.1-Fun-1.3B-InP/*.pth` + `EffectErase/EffectErase.ckpt` (LoRA) |
 | ProPainter  | weights downloaded by `ProPainter/weights/download_sam_ckpt.sh`; plus `ProPainter/weights/i3d_rgb_imagenet.pt` for VFID |
+| MaskPipeline | SAM3 model directory configured in `MaskPipeline/configs/mask_video.yaml`; YOLOv8 weights can be downloaded locally by `ultralytics` or placed in `MaskPipeline/` |
+
+## Mask Generation
+
+`MaskPipeline` is standalone. It is not called automatically by
+`inference_all.sh` or `run_wild_inference.sh`; run it first when you need masks
+for in-the-wild clips.
+
+```bash
+cd MaskPipeline
+conda activate sam3
+
+python scripts/run_mask_video.py \
+  --input Input_video/Unedited/example-3.mp4 \
+  --target-text person \
+  --yolo-class person \
+  --output outputs/example-3_masked.mp4
+```
+
+For a specific object instance, add a box prompt:
+
+```bash
+python scripts/run_mask_video.py \
+  --input Input_video/Unedited/example-3.mp4 \
+  --target-text "the man in white shirt" \
+  --yolo-class person \
+  --prompt-box "100,120,300,500" \
+  --output outputs/example-3_masked.mp4
+```
+
+The mask pipeline writes a binary mask video, an overlay preview, optional PNG
+masks, and `meta.json`. To use a generated mask with the existing wild-video
+inference script, arrange files as:
+
+```
+wild_videos/<name>.mp4
+wild_videos/<name>_mask.mp4
+```
+
+Then edit the arrays in `run_wild_inference.sh` if needed and run the normal
+wild-video workflow.
 
 ## Inference
 

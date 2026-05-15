@@ -1,0 +1,28 @@
+#这个是跑example6的命令，在5卡上面跑，prompt是框加person
+cd /home/czy/MASK_pipline
+
+conda deactivate
+conda activate sam3
+
+CUDA_VISIBLE_DEVICES=5 bash scripts/run_mask_pipeline.sh \
+  --input "Input_video/Unedited/example-6.mp4" \
+  --target-text "person" \
+  --yolo-class "person" \
+  --prompt-box "420,0,840,719" \
+  --disable-optical-flow \
+  --output "outputs/example-6_masked.mp4"
+
+#这个是跑example7的命令，在5卡上面跑，prompt是框加person
+
+cd /home/czy/MASK_pipline
+
+conda deactivate
+conda activate sam3
+
+CUDA_VISIBLE_DEVICES=5 bash scripts/run_mask_pipeline.sh \
+  --input "Input_video/Unedited/example-7.mp4" \
+  --target-text "person" \
+  --yolo-class "person" \
+  --prompt-box "535,290,750,719" \
+  --disable-optical-flow \
+  --output "outputs/example-7_masked.mp4"

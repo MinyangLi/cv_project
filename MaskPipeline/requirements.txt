@@ -1,0 +1,9 @@
+numpy
+opencv-python
+PyYAML
+imageio-ffmpeg
+torch
+torchvision
+ultralytics
+transformers
+accelerate

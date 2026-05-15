@@ -21,6 +21,7 @@ ROSE-Benchmark/
 wild_videos/
 DAVIS/
 eval_dataset/
+MaskPipeline/Input_video/
 
 # --- run outputs / logs ---
 eval_results/
@@ -31,6 +32,7 @@ log_out_concise/
 **/results_eval/
 **/inputs/
 **/outputs/
+MaskPipeline/outputs/
 
 # --- model weights (binary, big) ---
 *.pth
@@ -40,6 +42,9 @@ log_out_concise/
 *.bin
 *.onnx
 *.h5
+MaskPipeline/*.pth
+MaskPipeline/*.pt
+MaskPipeline/*.ckpt
 
 # --- video / large media ---
 *.mp4
@@ -54,6 +59,7 @@ log_out_concise/
 *.tar
 *.tar.gz
 *.zip
+MaskPipeline/*.mp4
 
 # --- ROSE: huge model checkpoints ---
 ROSE/models/
