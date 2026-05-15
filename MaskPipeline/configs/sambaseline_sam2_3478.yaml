@@ -1,0 +1,16 @@
+method: sambaseline_sam2
+dataset_root: /home/czy/ROSE-Benchmark/Benchmark/common
+part: part2
+videos:
+  - video_id: example-3
+    target_text: lifebuoy
+    prompt_box: [799, 386, 1120, 688]
+  - video_id: example-4
+    target_text: yellow clock
+    prompt_box: [772, 311, 1164, 764]
+  - video_id: example-7
+    target_text: woman statue
+    prompt_box: [867, 43, 1047, 561]
+  - video_id: example-8
+    target_text: human silhouette target poster without bullet holes
+    prompt_box: [799, 254, 1132, 762]

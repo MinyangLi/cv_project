@@ -1,0 +1,8 @@
+method: sambaseline_part1
+dataset_root: /home/czy/cv_project/MaskPipeline/outputs/IoU/Davis/dataset_videos
+part: part1
+videos:
+  - video_id: bmx-trees
+    target_text: person
+  - video_id: tennis
+    target_text: person

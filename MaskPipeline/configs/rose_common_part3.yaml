@@ -1,0 +1,43 @@
+part: part3
+dataset_root: /home/czy/ROSE-Benchmark/Benchmark/common
+base_config: /home/czy/cv_project/MaskPipeline/configs/mask_video.yaml
+component_area_threshold: 64
+
+videos:
+  - video_id: example-1
+    target_text: chair
+    prompt_box:
+      - [0, 4, 673, 761]
+      - [1765, 0, 1920, 400]
+  - video_id: example-2
+    target_text: fire extinguisher and wall paintings
+    prompt_box:
+      - [81, 437, 153, 691]
+      - [640, 346, 791, 727]
+      - [803, 345, 954, 728]
+      - [967, 345, 1119, 729]
+      - [1132, 344, 1285, 730]
+  - video_id: example-3
+    target_text: lifebuoy
+    prompt_box:
+      - [799, 386, 1120, 688]
+  - video_id: example-4
+    target_text: yellow clock
+    prompt_box:
+      - [772, 311, 1164, 764]
+  - video_id: example-5
+    target_text: neon sign
+    prompt_box:
+      - [622, 474, 1267, 608]
+  - video_id: example-6
+    target_text: portrait painting
+    prompt_box:
+      - [740, 277, 1172, 815]
+  - video_id: example-7
+    target_text: statue
+    prompt_box:
+      - [867, 43, 1047, 561]
+  - video_id: example-8
+    target_text: target poster
+    prompt_box:
+      - [799, 254, 1132, 762]

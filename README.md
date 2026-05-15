@@ -8,6 +8,7 @@ pipeline for generating object masks:
 - **EffectErase** &mdash; LoRA-tuned Wan2.1 inpainting pipeline.
 - **ProPainter** &mdash; flow-guided propagation + transformer inpainter.
 - **MaskPipeline** &mdash; SAM3 + YOLOv8-seg video mask generation.
+- **sambaseline** &mdash; local Part 1 / Part 2 mask baselines used for IoU comparison.
 
 ## Qualitative Comparison
 
@@ -44,6 +45,9 @@ cv_project/
 ├── EffectErase/                      # EffectErase code     (conda env: effecterase)
 ├── ProPainter/                       # ProPainter code      (conda env: propainter)
 ├── MaskPipeline/                     # Video mask generation (conda env: sam3)
+│   ├── sambaseline/                  # Part 1 / Part 2 baseline code
+│   ├── configs/                      # Mask and IoU evaluation configs
+│   └── scripts/                      # Mask generation and IoU evaluation CLIs
 │
 ├── ROSE-Benchmark/                   # Test set (downloaded, not in git)
 │   └── Benchmark/<category>/
@@ -94,6 +98,7 @@ Required model weights:
 | EffectErase | `EffectErase/Wan-AI/Wan2.1-Fun-1.3B-InP/*.pth` + `EffectErase/EffectErase.ckpt` (LoRA) |
 | ProPainter  | weights downloaded by `ProPainter/weights/download_sam_ckpt.sh`; plus `ProPainter/weights/i3d_rgb_imagenet.pt` for VFID |
 | MaskPipeline | SAM3 model directory configured in `MaskPipeline/configs/mask_video.yaml`; YOLOv8 weights can be downloaded locally by `ultralytics` or placed in `MaskPipeline/` |
+| sambaseline  | SAM2 checkpoint expected by the Part 2 baseline at `/data/sam2/sam2_hiera_small.pt`; YOLOv8 weights can be downloaded locally by `ultralytics` |
 
 ## Mask Generation
 
@@ -134,6 +139,48 @@ wild_videos/<name>_mask.mp4
 
 Then edit the arrays in `run_wild_inference.sh` if needed and run the normal
 wild-video workflow.
+
+### Mask IoU Baselines
+
+`MaskPipeline` also includes evaluation scripts for the object-mask stage:
+
+- **Part 1 baseline**: `MaskPipeline/sambaseline/part2_pipeline.py` with YOLOv8-seg dynamic masks and OpenCV inpainting path; evaluated through `scripts/eval_sambaseline_part1_iou.py`.
+- **Part 2 baseline**: local SAM2 propagation baseline; evaluated through `scripts/eval_sambaseline_sam2_iou.py`.
+- **Part 3 method**: this repository's SAM3/YOLO mask pipeline; evaluated through `scripts/eval_rose_common_iou.py`.
+
+Example RoSE common-subset runs:
+
+```bash
+cd MaskPipeline
+conda activate sam3
+
+CUDA_VISIBLE_DEVICES=2 python scripts/eval_sambaseline_part1_iou.py \
+  --config configs/sambaseline_part1_3478.yaml \
+  --output-root outputs/IoU/sambaseline_part1 \
+  --device cuda
+
+CUDA_VISIBLE_DEVICES=2 python scripts/eval_sambaseline_sam2_iou.py \
+  --config configs/sambaseline_sam2_3478.yaml \
+  --output-root outputs/IoU/sambaseline_sam2 \
+  --device cuda
+
+CUDA_VISIBLE_DEVICES=2 python scripts/eval_rose_common_iou.py \
+  --config configs/rose_common_part3_first3.yaml \
+  --output-root outputs/IoU \
+  --device cuda \
+  --force
+```
+
+DAVIS-style image sequences can be converted to video pairs before evaluation:
+
+```bash
+cd MaskPipeline
+python scripts/prepare_davis_eval_dataset.py
+python scripts/summarize_davis_iou.py --root outputs/IoU/Davis
+```
+
+All baseline outputs, logs, cache frames, masks, and generated videos are
+ignored by git under `MaskPipeline/outputs/`.
 
 ## Inference
 

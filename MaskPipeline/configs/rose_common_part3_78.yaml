@@ -1,0 +1,14 @@
+part: part3
+dataset_root: /home/czy/ROSE-Benchmark/Benchmark/common
+base_config: /home/czy/cv_project/MaskPipeline/configs/mask_video.yaml
+component_area_threshold: 64
+
+videos:
+  - video_id: example-7
+    target_text: woman statue
+    prompt_box:
+      - [867, 43, 1047, 561]
+  - video_id: example-8
+    target_text: human silhouette target poster without bullet holes
+    prompt_box:
+      - [799, 254, 1132, 762]

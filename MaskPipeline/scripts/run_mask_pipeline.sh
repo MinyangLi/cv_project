@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-# MASK_pipline 项目的统一 Bash 入口。
+# MaskPipeline 项目的统一 Bash 入口。
 #
 # 这个脚本本质上是在调用：
 #   python scripts/run_mask_video.py
